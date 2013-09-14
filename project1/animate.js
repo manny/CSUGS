@@ -18,8 +18,8 @@ var ctx = canvas.getContext('2d');
 
 function paddle(x, y){
 	
-	this.width = 50;
-	this.height = 15;
+	this.width = 75;
+	this.height = 12;
 	
 	//upper left corner of paddle
 	this.x = x;
@@ -34,8 +34,9 @@ function paddle(x, y){
 	this.blue = 0;
 
 	this.update = function(){
+		if(Key.isDown(Key.A)) this.moveLeft();
+		if(Key.isDown(Key.D)) this.moveRight();
 		this.draw();
-		console.log(this.x);
 	};
 
 	this.draw = function(){
@@ -44,6 +45,21 @@ function paddle(x, y){
 	};
 	this.draw();
 	
+	this.moveLeft = function(){
+		if(this.x>0){
+			this.x = this.x - 3;
+			this.x2 = this.x2 - 3
+		}
+	};
+	
+	
+	this.moveRight = function(){
+		if(this.x2 < canvasW){
+			this.x = this.x + 3;
+			this.x2 = this.x2 + 3;
+		}
+	};
+
 };
 
 
@@ -52,17 +68,17 @@ Key helper class that keeps track of keys up and down
 in _pressed array
 */
 
-/*
 var Key = {
     //array that keeps track of key presses
     _pressed: {},
 
     //controls
-    W: 87,      //player1 up
-    S: 83,      //player1 down
-    UP: 38,     //player2 up
-    DOWN: 40,   //player2 down
-    P: 80,      //pause/unpause ball
+    W: 87,      //cycle color up
+    S: 83,      // cylce color down
+    A: 65,		//paddle left
+	D: 68,		//paddle right
+	
+	P: 80,      //pause/unpause ball
     
     //returns if key is down/true or up/false)
     isDown: function(keyCode){
@@ -89,7 +105,7 @@ var Key = {
         return this._pressed[keyCode];
     }
 };
-*/
+
 var paddle1 = new paddle(100, 540); 
 
 setInterval(function(){
@@ -99,9 +115,9 @@ setInterval(function(){
 
 }, 25);
 
-/*
+
 //Event listeners that check for keyboard input
 window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); 
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
 window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
-*/
+
