@@ -16,14 +16,14 @@ var canvas = document.getElementById('screen');
 //getContext makes context object that is filled with functions for drawing
 var ctx = canvas.getContext('2d');
 
-function paddle(x, y){
+function paddle(){
 	
 	this.width = 75;
 	this.height = 12;
 	
 	//upper left corner of paddle
-	this.x = x;
-	this.y = y;
+	this.x = 100;
+	this.y = 540;
 
 	//lower right corner of paddle
 	this.x2 = this.x+this.width;
@@ -61,6 +61,36 @@ function paddle(x, y){
 	};
 
 };
+
+function ball(x, y, weight, red, green, blue){
+	
+	this.width = 10;
+	this.height = 10;
+	this.radius = this.width/2;
+
+	//upper left coordinates
+	this.x = x;
+	this.y = y;
+
+	//lower right coordinates
+	this.x2 = this.x + this.width;
+	this.y2 = this.y + this.height
+	
+	// x and y velocities (+y = down)
+	
+	this.vx = 0;
+	this.vy = 2;
+
+	this.draw = function(){
+		
+		
+
+	}
+	
+
+};
+
+
 
 
 /*
@@ -106,7 +136,7 @@ var Key = {
     }
 };
 
-var paddle1 = new paddle(100, 540); 
+var paddle1 = new paddle(); 
 
 setInterval(function(){
     //clears whole screen before objects are redrawn
