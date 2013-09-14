@@ -78,11 +78,12 @@ function ball(x, y, weight, red, green, blue){
 	
 	// x and y velocities (+y = down)
 	
-	this.vx = 0.0;
+	this.vx = 1.0;
 	this.vy = 0.0;
 
 	this.acceleration = 0.15;
-
+	this.weight = weight;
+	
 	//color values;
 	this.red = red;
 	this.green = green;
@@ -106,22 +107,28 @@ function ball(x, y, weight, red, green, blue){
 		this.y = this.y + this.vy;
 		this.y2 = this.y2 + this.vy;
 		//console.log("velocity: " + this.vy);
+		this.x = this.x + this.vx;
+		this.x2 = this.x2 + this.vx;
 	};
 
 	this.collision = function(){
-		if(this.y2 > 540){
-			this.bounceY();	
+		if((this.y2 > paddle1.y) && this.x > paddle1.x && this.x2 < paddle1.x2){
+			this.bounceY();
 		}
+		//if(this.y2 > paddle1.y -1) this.bounceY();	
+		if(this.x < 0 || this.x2 > canvasW) this.bounceX();
 	};
 
 	this.bounceY = function(){
-		this.vy = this.vy * -1.01;
+		//console.log(this.vy);
+		this.vy = -1.0 * this.weight;
 	};
+
+	this.bounceX = function(){
+		this.vx = this.vx * -1.0
+	}
 	
 };
-
-
-
 
 /*
 Key helper class that keeps track of keys up and down
@@ -167,10 +174,10 @@ var Key = {
 };
 
 var paddle1 = new paddle(); 
-var ball1 = new ball(50, 50, 0, 0, 0, 0);
-var ball2 = new ball(150, 150, 0, 0, 0, 0);
-var ball3 = new ball(250, 250, 0, 0, 0, 0);
-var ball4 = new ball(350, 350, 0, 0, 0, 0);
+var ball1 = new ball(50, 50, 11.8, 0, 0, 0);
+var ball2 = new ball(150, 150, 10.3, 0, 0, 0);
+var ball3 = new ball(250, 250, 8.5, 0, 0, 0);
+var ball4 = new ball(350, 350, 6, 0, 0, 0);
 
 
 setInterval(function(){
@@ -180,7 +187,6 @@ setInterval(function(){
 	ball1.update();
 	ball2.update();
 	ball3.update();
-	ball4.update();
 }, 25);
 
 
