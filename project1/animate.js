@@ -47,16 +47,16 @@ function paddle(){
 	
 	this.moveLeft = function(){
 		if(this.x>0){
-			this.x = this.x - 3;
-			this.x2 = this.x2 - 3
+			this.x = this.x - 7.5;
+			this.x2 = this.x2 - 7.5
 		}
 	};
 	
 	
 	this.moveRight = function(){
 		if(this.x2 < canvasW){
-			this.x = this.x + 3;
-			this.x2 = this.x2 + 3;
+			this.x = this.x + 7.5;
+			this.x2 = this.x2 + 7.5;
 		}
 	};
 
@@ -78,8 +78,8 @@ function ball(x, y, weight, red, green, blue){
 	
 	// x and y velocities (+y = down)
 	
-	this.vx = 0;
-	this.vy = 0;
+	this.vx = 0.0;
+	this.vy = 0.0;
 
 	this.acceleration = 0.15;
 
@@ -115,7 +115,7 @@ function ball(x, y, weight, red, green, blue){
 	};
 
 	this.bounceY = function(){
-		this.vy = this.vy * -1
+		this.vy = this.vy * -1.01;
 	};
 	
 };
@@ -168,6 +168,9 @@ var Key = {
 
 var paddle1 = new paddle(); 
 var ball1 = new ball(50, 50, 0, 0, 0, 0);
+var ball2 = new ball(150, 150, 0, 0, 0, 0);
+var ball3 = new ball(250, 250, 0, 0, 0, 0);
+var ball4 = new ball(350, 350, 0, 0, 0, 0);
 
 
 setInterval(function(){
@@ -175,7 +178,9 @@ setInterval(function(){
     ctx.clearRect(0, 0, 400, 600);
 	paddle1.update();
 	ball1.update();
-
+	ball2.update();
+	ball3.update();
+	ball4.update();
 }, 25);
 
 
