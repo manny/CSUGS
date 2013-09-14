@@ -1,5 +1,5 @@
-var canvasH = 400;
-var canvasW = 600;
+var canvasH = 600;
+var canvasW = 400;
 
 /*
 setTimeout(function(){
