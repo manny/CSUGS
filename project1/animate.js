@@ -64,8 +64,8 @@ function paddle(){
 
 function ball(x, y, weight, red, green, blue){
 	
-	this.width = 10;
-	this.height = 10;
+	this.width = 20;
+	this.height = 20;
 	this.radius = this.width/2;
 
 	//upper left coordinates
@@ -79,15 +79,45 @@ function ball(x, y, weight, red, green, blue){
 	// x and y velocities (+y = down)
 	
 	this.vx = 0;
-	this.vy = 2;
+	this.vy = 0;
 
-	this.draw = function(){
-		
-		
+	this.acceleration = 0.15;
 
-	}
+	//color values;
+	this.red = red;
+	this.green = green;
+	this.blude = blue;
+
+	this.update = function(){
+		this.motion();
+		this.collision();
+		this.draw();
+	};
 	
+	this.draw = function(){
+		ctx.fillStyle="green";
+		ctx.beginPath();
+		ctx.arc(this.x + 10, this.y + 10, this.radius, 0, Math.PI*2, true);
+		ctx.fill();
+	};
 
+	this.motion = function(){
+		this.vy = this.vy + this.acceleration
+		this.y = this.y + this.vy;
+		this.y2 = this.y2 + this.vy;
+		//console.log("velocity: " + this.vy);
+	};
+
+	this.collision = function(){
+		if(this.y2 > 540){
+			this.bounceY();	
+		}
+	};
+
+	this.bounceY = function(){
+		this.vy = this.vy * -1
+	};
+	
 };
 
 
@@ -137,11 +167,14 @@ var Key = {
 };
 
 var paddle1 = new paddle(); 
+var ball1 = new ball(50, 50, 0, 0, 0, 0);
+
 
 setInterval(function(){
     //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, 400, 600);
 	paddle1.update();
+	ball1.update();
 
 }, 25);
 
