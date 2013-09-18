@@ -29,18 +29,18 @@ function paddle(){
 	this.x2 = this.x+this.width;
 	this.y2 = this.y+this.height;
 
-	this.red = 0;
-	this.green = 0;
-	this.blue = 0;
+	this.color = "silver";
 
 	this.update = function(){
 		if(Key.isDown(Key.A)) this.moveLeft();
 		if(Key.isDown(Key.D)) this.moveRight();
+		if(Key.isDown(Key.K)) this.color = "silver";
+		if(Key.isDown(Key.L)) this.color = "purple";
 		this.draw();
 	};
 
 	this.draw = function(){
-		ctx.fillStyle = "rgb(150, 0 ,150)";
+		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	};
 	this.draw();
@@ -52,17 +52,15 @@ function paddle(){
 		}
 	};
 	
-	
 	this.moveRight = function(){
 		if(this.x2 < canvasW){
 			this.x = this.x + 7.5;
 			this.x2 = this.x2 + 7.5;
 		}
 	};
-
 };
 
-function ball(x, y, weight, red, green, blue){
+function ball(x, y, weight, vx, color){
 	
 	this.width = 20;
 	this.height = 20;
@@ -78,16 +76,13 @@ function ball(x, y, weight, red, green, blue){
 	
 	// x and y velocities (+y = down)
 	
-	this.vx = 1.0;
+	this.vx = vx;
 	this.vy = 0.0;
 
 	this.acceleration = 0.15;
 	this.weight = weight;
-	
-	//color values;
-	this.red = red;
-	this.green = green;
-	this.blude = blue;
+
+	this.color =  color;
 
 	this.update = function(){
 		this.motion();
@@ -96,14 +91,14 @@ function ball(x, y, weight, red, green, blue){
 	};
 	
 	this.draw = function(){
-		ctx.fillStyle="green";
+		ctx.fillStyle = this.color;
 		ctx.beginPath();
 		ctx.arc(this.x + 10, this.y + 10, this.radius, 0, Math.PI*2, true);
 		ctx.fill();
 	};
 
 	this.motion = function(){
-		this.vy = this.vy + this.acceleration
+		this.vy = this.vy + this.weight;
 		this.y = this.y + this.vy;
 		this.y2 = this.y2 + this.vy;
 		//console.log("velocity: " + this.vy);
@@ -112,7 +107,7 @@ function ball(x, y, weight, red, green, blue){
 	};
 
 	this.collision = function(){
-		if((this.y2 > paddle1.y) && this.x > paddle1.x && this.x2 < paddle1.x2){
+		if(this.y2 > paddle1.y && this.y2 <paddle1.y2  && (this.x2 > paddle1.x && this.x < paddle1.x2)){
 			this.bounceY();
 		}
 		//if(this.y2 > paddle1.y -1) this.bounceY();	
@@ -121,7 +116,11 @@ function ball(x, y, weight, red, green, blue){
 
 	this.bounceY = function(){
 		//console.log(this.vy);
-		this.vy = -1.0 * this.weight;
+		if(this.color != paddle1.color){
+			this.vy = -0.67 * this.vy;
+		}else{
+			this.vy = -1.011 * this.vy;
+		}
 	};
 
 	this.bounceX = function(){
@@ -140,12 +139,10 @@ var Key = {
     _pressed: {},
 
     //controls
-    W: 87,      //cycle color up
-    S: 83,      // cylce color down
+    K: 75,     //cycle color up
+    L: 76,      // cylce color down
     A: 65,		//paddle left
 	D: 68,		//paddle right
-	
-	P: 80,      //pause/unpause ball
     
     //returns if key is down/true or up/false)
     isDown: function(keyCode){
@@ -174,10 +171,26 @@ var Key = {
 };
 
 var paddle1 = new paddle(); 
-var ball1 = new ball(50, 50, 11.8, 0, 0, 0);
-var ball2 = new ball(150, 150, 10.3, 0, 0, 0);
-var ball3 = new ball(250, 250, 8.5, 0, 0, 0);
-var ball4 = new ball(350, 350, 6, 0, 0, 0);
+var ball1 = new ball(50, -100, 0.09, 1,"silver");
+var ball2 = new ball(150, 0, 0.08, -1.2,"purple");
+var ball3 = new ball(250, 100, 0.06, 1.3,"silver");
+var ball4 = new ball(350, -100, 0.05, 1.2,"purple");
+
+var draw2 = false;
+var draw3 = false;
+var draw4 = false;
+
+setTimeout(function(){
+	draw2 = true;
+}, 2000);
+
+setTimeout(function(){
+	draw3 = true
+}, 4000);
+
+setTimeout(function(){
+	draw4 = true;
+}, 8000);
 
 
 setInterval(function(){
@@ -185,8 +198,9 @@ setInterval(function(){
     ctx.clearRect(0, 0, 400, 600);
 	paddle1.update();
 	ball1.update();
-	ball2.update();
-	ball3.update();
+	if(draw2) ball2.update();
+	if(draw3) ball3.update();
+	if(draw4) ball4.update();
 }, 25);
 
 
