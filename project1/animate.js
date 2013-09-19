@@ -47,15 +47,15 @@ function paddle(){
 	
 	this.moveLeft = function(){
 		if(this.x>0){
-			this.x = this.x - 7.5;
-			this.x2 = this.x2 - 7.5
+			this.x = this.x - 9.0;
+			this.x2 = this.x2 - 9.0;
 		}
 	};
 	
 	this.moveRight = function(){
 		if(this.x2 < canvasW){
-			this.x = this.x + 7.5;
-			this.x2 = this.x2 + 7.5;
+			this.x = this.x + 9.0;
+			this.x2 = this.x2 + 9.0;
 		}
 	};
 };
