@@ -35,7 +35,7 @@ function paddle(){
 		if(Key.isDown(Key.A)) this.moveLeft();
 		if(Key.isDown(Key.D)) this.moveRight();
 		if(Key.isDown(Key.K)) this.color = "silver";
-		if(Key.isDown(Key.L)) this.color = "purple";
+		if(Key.isPressed(Key.L)) this.color = "purple"
 		this.draw();
 	};
 
