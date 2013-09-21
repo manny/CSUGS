@@ -16,6 +16,29 @@ var canvas = document.getElementById('screen');
 //getContext makes context object that is filled with functions for drawing
 var ctx = canvas.getContext('2d');
 
+function drawMap(){
+
+	ctx.font = "12pt Arial";
+	ctx.fillStyle = "white";
+	var y = 20;
+	for(var x = 0; x<600; x=x+15){
+		for(var y = 0; y<400; y=y+15){
+			if(y%2==0){
+				ctx.fillText(" w ", x-4, y+3);
+			}else{
+				ctx.fillText(" . ", x, y);
+			}
+
+			console.log("print .");
+		}
+	}
+
+	console.log("draw map");
+}
+
+
+
+
 var Key = {
     //array that keeps track of key presses
     _pressed: {},
@@ -52,12 +75,15 @@ var Key = {
     }
 };
 
+drawMap();
+/*
 setInterval(function(){
     //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, canvasW, canvasH);
-}, 25);
+	drawMap();
+}, 500);
 
-
+*/
 //Event listeners that check for keyboard input
 window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); 
 window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
