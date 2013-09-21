@@ -1,5 +1,5 @@
-var canvasH = 400;
-var canvasW = 600;
+var canvasH = 395;
+var canvasW = 630;
 
 /*
 setTimeout(function(){
@@ -16,76 +16,98 @@ var canvas = document.getElementById('screen');
 //getContext makes context object that is filled with functions for drawing
 var ctx = canvas.getContext('2d');
 
+$(document).ready(function(e){
+	$(window).keypress(function(event){
+		console.log(event.which);
+	});
+});
+
+var rows = 25;
+var cols = 40;
+
+
+function pawn(character, row, column, xAdj, yAdj, color){
+	
+	this.character = character;
+	this.row = row;
+	this.column = column;
+	this.xAdj = xAdj;
+	this.yAdj = yAdj;
+	this.color = color;
+
+
+
+}
+/*
 function drawMap(){
 
-	ctx.font = "12pt Arial";
-	ctx.fillStyle = "white";
-	var y = 20;
-	for(var x = 0; x<600; x=x+15){
-		for(var y = 0; y<400; y=y+15){
-			if(y%2==0){
-				ctx.fillText(" w ", x-4, y+3);
-			}else{
-				ctx.fillText(" . ", x, y);
-			}
+	var xIndex = 0;
+	var yIndex = 0;
+	var x = 0;
+	var y = 0;
+	
+}
+*/
 
-			console.log("print .");
+function map(){
+	
+	//indexes of arrays
+	this.xIndex = 0;
+	this.yIndex = 0;
+	//coordinates on canvas
+	this.x = 2;
+	this.y = 10;
+	//this.x = this.xIndex*16 + 2;
+	//this.y = this.yIndex*16 + 10;
+	
+	this.stringArray = new Array(rows);
+	for(var i = 0; i < rows; i++){
+		this.stringArray[i] = new Array(cols);
+		for(var j = 0; j < cols; j++){
+			this.stringArray[i][j] = " . ";
 		}
 	}
 
-	console.log("draw map");
+	this.drawMap = function(){
+		ctx.font = "12pt Arial";
+		ctx.fillStyle = "white";
+		for(var i = 0; i < rows; i++){
+			for(var j = 0; j < cols; j++){  //loop thru pawns, check if any are suppose to be at current spot
+											//else print a " . "
+				ctx.fillText(this.stringArray[i][j], (j*16+2), (i*16+10));
+			}
+		}
+	};
+
+
+	/*	
+	ctx.font = "12pt Arial";
+	ctx.fillStyle = "white";
+	for(var x = 2; x<canvasW; x=x+16){
+		for(var y = 10; y<canvasH; y=y+16){
+			if(x == 34 && y == 26){
+				ctx.fillText("[A]", x-3, y+4);
+			}else if(x == 50 && y == 10){
+				ctx.fillText("[A]", x-3, y+4);
+				
+			}else{
+				ctx.fillText(" . ", x, y);
+			}
+			if(x==2){
+			}
+		}
+	}
+	*/
+
+	//console.log("rows: "+rows);
+	//console.log("cols: "+cols);
 }
 
+var myMap = new map();
 
-
-
-var Key = {
-    //array that keeps track of key presses
-    _pressed: {},
-
-    //controls
-    K: 75,     //cycle color up
-    L: 76,      // cylce color down
-    A: 65,		//paddle left
-	D: 68,		//paddle right
-    
-    //returns if key is down/true or up/false)
-    isDown: function(keyCode){
-        return this._pressed[keyCode];
-    },
-    //sets array index to true when key is pressed
-    onKeydown: function(event){
-        this._pressed[event.keyCode] = true;
-    },
-    //unsets array index when key is released
-    onKeyup: function(event){
-        delete this._pressed[event.keyCode];
-    },
-    //sets array index when button is presses, unsets if unpressed
-    onKeypress: function(event){
-        if(!this._pressed[event.which]){
-            delete this._pressed[event.which];  //use event.which for firefox keyPress
-        }else{                                  //event.keyCode for IE onKeyPress
-            this._pressed[event.which] = true;
-        }
-    },
-    //returs if key is pressed down
-    isPressed: function(keyCode){
-        return this._pressed[keyCode];
-    }
-};
-
-drawMap();
-/*
 setInterval(function(){
     //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, canvasW, canvasH);
-	drawMap();
-}, 500);
-
-*/
-//Event listeners that check for keyboard input
-window.addEventListener('keypress', function(event) {Key.onKeypress(event); }, false); 
-window.addEventListener('keyup', function(event) {Key.onKeyup(event); }, false);
-window.addEventListener('keydown', function(event) {Key.onKeydown(event); }, false);
-
+	myMap.drawMap();
+	myMap.stringArray[2][3] = "[A]";
+}, 100);
