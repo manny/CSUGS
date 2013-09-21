@@ -1,0 +1,17 @@
+*{
+    text-align:center;
+
+
+}
+body{
+    background-color:white;
+
+}
+h2{
+    color:black;
+}
+canvas{
+    margin-top: 20px;
+    background-color:black;
+
+}
