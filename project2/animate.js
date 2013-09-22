@@ -99,7 +99,7 @@ function map(){
 	for(var i = 0; i < cols; i++){
 		this.stringArray[i] = new Array(rows);
 		for(var j = 0; j < rows; j++){
-			this.stringArray[i][j] = " . ";
+			this.stringArray[i][j] = "   ";
 		}
 	}
 
@@ -146,10 +146,30 @@ function map(){
 		}
 	};
 
+	this.buildStructure = function(element, startX, startY, direction, length){
+		
+		var xdir = 0;
+		var ydir = 0;
+		
+		switch(direction){
+			case "l": xdir = -1;  
+				break;
+			case "r": xdir = 1;
+				break; 
+			case "u": ydir = -1;
+				break;
+			case "d": ydir = 1;
+				break;
+
+		}
+		for(var i = 0; i<length; i++){
+			myMap.stringArray[startX + (xdir*i)][startY + (ydir*i)] = element;
+		}
+	}
 };
 var charArray = [" + ", "", ""];
 var charXadj = [-2, 0, 0];
-var charYadj = [3, 0, 0];
+var charYadj = [4, 0, 0];
 
 
 var myMap = new map();
@@ -158,6 +178,11 @@ var player2 = new pawn("[B]", 11, 11, -3, 4, "red");
 var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
 var pawnArray = [player1, player2,player3];
 
+
+myMap.buildStructure(" . ", 20, 9, "r", 5);
+myMap.buildStructure(" . ", 20, 10, "r", 5);
+myMap.buildStructure(" . ", 24, 15, "u", 5);
+myMap.buildStructure(" . ", 25, 15, "u", 7);
 //console.log(player1.character[0]);
 //player1.character = (player1.character).replaceAt(0, "!");
 //console.log(player1.character[0]);
