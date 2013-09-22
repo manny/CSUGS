@@ -11,10 +11,15 @@ var ctx = canvas.getContext('2d');
 $(document).ready(function(e){
 	$(window).keypress(function(event){
 		console.log(event.which);
-		if(event.which == 97) player2.move("left");
-		if(event.which == 100) player2.move("right");
-		if(event.which == 119) player2.move("up");
-		if(event.which == 115) player2.move("down");
+		if(event.which == 97) player1.move("left");
+		if(event.which == 100) player1.move("right");
+		if(event.which == 119) player1.move("up");
+		if(event.which == 115) player1.move("down");
+		//combat
+		if(event.which == 106) player1.attack("left");
+		if(event.which == 108) player1.attack("right");
+		if(event.which == 105) player1.attack("up");
+		if(event.which == 107) player1.attack("down");
 	});
 });
 
@@ -35,6 +40,10 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 	this.color = color;
 	//underlying character
 	this.underChar = myMap.stringArray[xCoor][yCoor];	
+	
+	this.canAttack = true;
+	this.health = 5;
+
 
 	myMap.stringArray[this.xCoor][this.yCoor] = this.character;
 	myMap.pawnIndex[this.xCoor][this.yCoor] = true;
@@ -56,12 +65,6 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 				if(this.yCoor !=22) ydir=1;
 				break;
 		}
-		
-		//this.underChar = myMap.stringArray[xCoor+xdirrri][yCoor+ydir];
-		
-		//if move happens
-		
-
 		if(myMap.stringArray[this.xCoor+xdir][this.yCoor+ydir] == " . "){
 			myMap.pawnIndex[this.xCoor][this.yCoor] = 0;
 			myMap.pawnIndex[this.xCoor+xdir][this.yCoor+ydir] = this;
@@ -79,13 +82,67 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 		}
 	}
 
+	this.getColor = function(){
+		if(this.health < 2){
+			return "red";
+		}else if(this.health <4){
+			return "yellow";
+		}
+		return this.color;
+	};
+
 	this.refreshPosition = function(){
 		this.xPosition = this.xCoor*16+2+this.xAdj;
 		this.yPosition = this.yCoor*16+10+this.yAdj;	
-	}
+	};
 	this.refreshPosition();
 	
-
+	this.attack = function(direction){
+		ctx.font = "11pt Arial";
+		ctx.fillStyle = this.color;
+		var xdir = 0;
+		var ydir = 0;
+		if(this.canAttack){
+			switch(direction){
+				case "left":
+					xdir = -1;
+					ctx.fillText("  <", this.xPosition - 16 ,this.yPosition);
+					break;
+				case "right":
+					xdir = 1;
+					ctx.fillText(">  ", this.xPosition + 16 ,this.yPosition);
+					break;
+				case "up":
+					ydir = -1
+					ctx.fillText(" ^ ", this.xPosition+2 ,this.yPosition - 12);
+					break;
+				case "down":
+					ydir = 1;
+					ctx.fillText(" v ", this.xPosition,this.yPosition + 16);
+					break;
+			}
+			this.canAttack = false;
+			setTimeout(function(){
+				player1.canAttack = true;
+				//console.log("readytoattack " + player1.canAttack);
+			},  500);
+		}else{
+			//console.log("cooling down");
+		}
+		var target = myMap.pawnIndex[this.xCoor+xdir][this.yCoor+ydir];
+		//if you hit an enemy
+		if(target!=0 && (xdir !=0 || ydir!=0)){
+			console.log("hit!");
+			target.health--;
+			if(target.health == 0){
+				myMap.stringArray[target.xCoor][target.yCoor] = target.underChar;
+				myMap.pawnIndex[target.xCoor][target.yCoor] = 0;
+				console.log("dead");
+			}
+		}else if(this.canAttack){
+			console.log("miss");	
+		}
+	};
 };
 
 function map(){
@@ -111,13 +168,15 @@ function map(){
 	}
 	
 	this.drawPawns = function(){
-		ctx.font = "11pt Arial"
+		ctx.font = "10pt Arial"
 		for(var i = 0; i < pawnArray.length; i++){
 			var p = pawnArray[i];
-			ctx.fillStyle = p.color;
-			ctx.fillText(p.character, p.xPosition, p.yPosition);
-			this.pawnIndex[p.xCoor][p.yCoor] = p;
-			this.stringArray[p.xCoor][p.yCoor] = p.character;
+			if(this.pawnIndex[p.xCoor][p.yCoor]!=0 && p.health>0){
+				ctx.fillStyle = p.getColor();;
+				ctx.fillText(p.character, p.xPosition, p.yPosition);
+				this.pawnIndex[p.xCoor][p.yCoor] = p;
+				this.stringArray[p.xCoor][p.yCoor] = p.character;
+			}
 		}
 	};
 	
@@ -192,7 +251,7 @@ var charYadj = [4, 5, -3, 4];
 
 
 var player1 = new pawn("\\Q/", 20, 10, -3, 4, "black");
-var player2 = new pawn("[B]", 17, 8, -3, 4, "red");
+var player2 = new pawn("[B]", 17, 8, -3, 4, "blue");
 var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
 var pawnArray = [player1, player2, player3];
 

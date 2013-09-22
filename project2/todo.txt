@@ -1,0 +1,6 @@
+field of view(make room object and clearRect the room when player isnt in it. will help for enemy behavior)
+cqc combat
+projectiles [cooldown]
+npc mentors
+basic enemy behavior scripting
+

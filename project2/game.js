@@ -3,4 +3,4 @@ setInterval(function(){
     ctx.clearRect(0, 0, canvasW, canvasH);
 	myMap.drawPawns();
 	myMap.drawMap();
-}, 20);
+}, 80);
