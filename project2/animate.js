@@ -141,6 +141,8 @@ function map(){
 				
 				if(!this.isPawn[i][j]){	
 					ctx.fillText(this.stringArray[i][j], (i*16+2) + adjX, (j*16+10) + adjY );
+					adjX = 0;
+					adjY = 0;
 				}
 			}
 		}
@@ -167,9 +169,9 @@ function map(){
 		}
 	}
 };
-var charArray = [" + ", "", ""];
+var charArray = [" + ", " # ", ""];
 var charXadj = [-2, 0, 0];
-var charYadj = [4, 0, 0];
+var charYadj = [4, 5, 0];
 
 
 var myMap = new map();
@@ -178,11 +180,13 @@ var player2 = new pawn("[B]", 11, 11, -3, 4, "red");
 var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
 var pawnArray = [player1, player2,player3];
 
+myMap.buildStructure(" # ", 21, 15, "r", 11);
 
 myMap.buildStructure(" . ", 20, 9, "r", 5);
 myMap.buildStructure(" . ", 20, 10, "r", 5);
 myMap.buildStructure(" . ", 24, 15, "u", 5);
 myMap.buildStructure(" . ", 25, 15, "u", 7);
+
 //console.log(player1.character[0]);
 //player1.character = (player1.character).replaceAt(0, "!");
 //console.log(player1.character[0]);
