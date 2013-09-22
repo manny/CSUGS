@@ -1,6 +1,7 @@
 var canvasH = 395;
 var canvasW = 630;
 
+var soundtrack = AudioFX('sounds/spooky.ogg',{loop: true}); //ogg sound files supported in firefox
 
 // grabs canvas by ID from index.html
 var canvas = document.getElementById('screen');
@@ -11,6 +12,7 @@ var ctx = canvas.getContext('2d');
 $(document).ready(function(e){
 	$(window).keypress(function(event){
 		console.log(event.which);
+		//movement
 		if(event.which == 97) player1.move("left");
 		if(event.which == 100) player1.move("right");
 		if(event.which == 119) player1.move("up");
@@ -30,7 +32,7 @@ String.prototype.replaceAt=function(index, character){
 	return this.substr(0, index) + character + this.substr(index+character.length);
 }
 
-function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
+function pawn(character, xCoor, yCoor, xAdj, yAdj, color, type){
 	
 	this.character = character;
 	this.xCoor = xCoor;
@@ -38,12 +40,13 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 	this.xAdj = xAdj;
 	this.yAdj = yAdj;
 	this.color = color;
-	//underlying character
+	
 	this.underChar = myMap.stringArray[xCoor][yCoor];	
 	
 	this.canAttack = true;
 	this.health = 5;
-
+	
+	this.type = type;
 
 	myMap.stringArray[this.xCoor][this.yCoor] = this.character;
 	myMap.pawnIndex[this.xCoor][this.yCoor] = true;
@@ -234,6 +237,7 @@ function map(){
 		}
 	};
 };
+
 var myMap = new map();
 myMap.buildRoom(21, 15, 11, 6);
 myMap.buildRoom(16, 5, 5, 8);
@@ -248,13 +252,16 @@ myMap.buildStructure(" . ", 25, 15, "u", 7);
 var charArray = [" + ", " # "];
 var charXadj = [-2, 0, -3, 4];
 var charYadj = [4, 5, -3, 4];
+var charColors = {};    
 
 
-var player1 = new pawn("\\Q/", 20, 10, -3, 4, "black");
-var player2 = new pawn("[B]", 17, 8, -3, 4, "blue");
-var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
+var player1 = new pawn("\\Q/", 20, 10, -3, 4, "black", "player");
+var player2 = new pawn("[B]", 17, 8, -3, 4, "blue", "enemy");
+var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "npc");
 var pawnArray = [player1, player2, player3];
 
+
+//soundtrack.play();
 
 //console.log(player1.character[0]);
 //player1.character = (player1.character).replaceAt(0, "!");

@@ -1,0 +1,25 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <title>HTML5 Audio</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head> 
+ 
+<body> 
+
+  <h1>Experimenting with HTML5 Audio</h1>
+
+  <input type='button' value='POOL'   onclick="pool.play()"   />
+  <input type='button' value='SINGLE' onclick="single.play()" />
+
+  <script src="audio-fx.min.js"></script>
+  <script>
+
+    var music  = AudioFX('sounds/music',  { formats: ['ogg','mp3','m4a'], volume: 0.1, loop: true, autoplay: true });
+    var pool   = AudioFX('sounds/pool',   { formats: ['ogg','mp3','m4a'], volume: 0.1, pool: 20                   });
+    var single = AudioFX('sounds/single', { formats: ['ogg','mp3','m4a'], volume: 0.1                             });
+
+  </script>
+
+</body> 
+</html>
