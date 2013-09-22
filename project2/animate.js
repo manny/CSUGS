@@ -1,14 +1,6 @@
 var canvasH = 395;
 var canvasW = 630;
 
-/*
-setTimeout(function(){
-    console.log("world");
-
-}, 3000);
-
-console.log("hello");
-*/
 
 // grabs canvas by ID from index.html
 var canvas = document.getElementById('screen');
@@ -18,36 +10,81 @@ var ctx = canvas.getContext('2d');
 
 $(document).ready(function(e){
 	$(window).keypress(function(event){
-		console.log(event.which);
+		//console.log(event.which);
+		if(event.which == 97) player1.move("left");
+		if(event.which == 100) player1.move("right");
+		if(event.which == 119) player1.move("up");
+		if(event.which == 115) player1.move("down");
 	});
 });
 
-var rows = 25;
-var cols = 40;
+var rows = 23;
+var cols = 37;
 
+String.prototype.replaceAt=function(index, character){
+	return this.substr(0, index) + character + this.substr(index+character.length);
+}
 
-function pawn(character, row, column, xAdj, yAdj, color){
+function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 	
 	this.character = character;
-	this.row = row;
-	this.column = column;
+	this.xCoor = xCoor;
+	this.yCoor = yCoor;
 	this.xAdj = xAdj;
 	this.yAdj = yAdj;
 	this.color = color;
-
-
-
-}
-/*
-function drawMap(){
-
-	var xIndex = 0;
-	var yIndex = 0;
-	var x = 0;
-	var y = 0;
+	//underlying character
+	this.underChar = myMap.stringArray[xCoor][yCoor];
 	
-}
-*/
+	myMap.stringArray[xCoor][yCoor];
+
+	this.move = function(direction){
+		var xdir = 0;
+		var ydir = 0;
+		switch(direction){
+			case "left": 
+				if(this.xCoor !=0) xdir=-1;
+				break;
+			case "right": 
+				if(this.xCoor !=36) xdir=1;
+				break;
+			case "up": 
+				if(this.yCoor != 0) ydir=-1;
+				break;
+			case "down": 
+				if(this.yCoor !=22) ydir=1;
+				break;
+		}
+		
+		//this.underChar = myMap.stringArray[xCoor+xdirrri][yCoor+ydir];
+		
+		//if move happens
+		
+
+
+		myMap.isPawn[this.xCoor][this.yCoor] = false;
+		myMap.isPawn[this.xCoor+xdir][this.yCoor+ydir] = true;
+		
+		myMap.stringArray[this.xCoor][this.yCoor] = this.underChar;
+		
+		//update position
+		
+		this.xCoor = this.xCoor + xdir;
+		this.yCoor = this.yCoor + ydir;
+		
+
+		this.underChar = myMap.stringArray[this.xCoor][this.yCoor];
+		//myMap.stringArray[xCoor];	
+		this.refreshPosition();	
+	}
+
+	this.refreshPosition = function(){
+		this.xPosition = this.xCoor*16+2+this.xAdj;
+		this.yPosition = this.yCoor*16+10+this.yAdj;	
+	}
+	this.refreshPosition();
+
+};
 
 function map(){
 	
@@ -57,57 +94,76 @@ function map(){
 	//coordinates on canvas
 	this.x = 2;
 	this.y = 10;
-	//this.x = this.xIndex*16 + 2;
-	//this.y = this.yIndex*16 + 10;
-	
+
 	this.stringArray = new Array(rows);
-	for(var i = 0; i < rows; i++){
-		this.stringArray[i] = new Array(cols);
-		for(var j = 0; j < cols; j++){
+	for(var i = 0; i < cols; i++){
+		this.stringArray[i] = new Array(rows);
+		for(var j = 0; j < rows; j++){
 			this.stringArray[i][j] = " . ";
 		}
 	}
 
+	this.isPawn = new Array(rows);
+	for(var i = 0; i < cols; i++){
+		this.isPawn[i] = new Array(rows);
+		for(var j = 0; j < rows; j++){
+			this.isPawn[i][j] = false;
+		}
+	}
+	
+	this.drawPawns = function(){
+		ctx.font = "11pt Arial"
+		for(var i = 0; i < pawnArray.length; i++){
+			var p = pawnArray[i];
+			ctx.fillStyle = p.color;
+			p.underChar = myMap.stringArray[p.xCoor][p.yCoor];
+			//console.log(p.underChar);
+			ctx.fillText(p.character, p.xPosition, p.yPosition);
+			myMap.isPawn[p.xCoor][p.yCoor] = true;
+		}
+	};
+	
 	this.drawMap = function(){
 		ctx.font = "12pt Arial";
-		ctx.fillStyle = "white";
-		for(var i = 0; i < rows; i++){
-			for(var j = 0; j < cols; j++){  //loop thru pawns, check if any are suppose to be at current spot
+		ctx.fillStyle = "red";
+		var adjX = 0;
+		var adjY = 0;
+		for(var i = 0; i < cols; i++){
+			for(var j = 0; j < rows; j++){  //loop thru pawns, check if any are suppose to be at current spot
 											//else print a " . "
-				ctx.fillText(this.stringArray[i][j], (j*16+2), (i*16+10));
+				for(var k = 0; k <charArray.length; k++){
+					if(this.stringArray[i][j] == charArray[k]){
+						adjX = charXadj[k];		
+						adjY = charYadj[k];		
+						break;
+					}
+				}
+				
+				if(!this.isPawn[i][j]){	
+					ctx.fillText(this.stringArray[i][j], (i*16+2) + adjX, (j*16+10) + adjY );
+				}
 			}
 		}
 	};
 
+};
+var charArray = [" + ", "", ""];
+var charXadj = [-2, 0, 0];
+var charYadj = [3, 0, 0];
 
-	/*	
-	ctx.font = "12pt Arial";
-	ctx.fillStyle = "white";
-	for(var x = 2; x<canvasW; x=x+16){
-		for(var y = 10; y<canvasH; y=y+16){
-			if(x == 34 && y == 26){
-				ctx.fillText("[A]", x-3, y+4);
-			}else if(x == 50 && y == 10){
-				ctx.fillText("[A]", x-3, y+4);
-				
-			}else{
-				ctx.fillText(" . ", x, y);
-			}
-			if(x==2){
-			}
-		}
-	}
-	*/
-
-	//console.log("rows: "+rows);
-	//console.log("cols: "+cols);
-}
 
 var myMap = new map();
+var player1 = new pawn("\\Q/", 10, 10, -3, 4, "green");
+var player2 = new pawn("[B]", 11, 11, -3, 4, "red");
+var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
+var pawnArray = [player1, player2,player3];
 
+//console.log(player1.character[0]);
+//player1.character = (player1.character).replaceAt(0, "!");
+//console.log(player1.character[0]);
 setInterval(function(){
     //clears whole screen before objects are redrawn
     ctx.clearRect(0, 0, canvasW, canvasH);
+	myMap.drawPawns();
 	myMap.drawMap();
-	myMap.stringArray[2][3] = "[A]";
 }, 100);
