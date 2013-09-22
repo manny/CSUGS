@@ -61,21 +61,22 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 		//if move happens
 		
 
+		if(myMap.stringArray[this.xCoor+xdir][this.yCoor+ydir] == " . "){
+			myMap.isPawn[this.xCoor][this.yCoor] = false;
+			myMap.isPawn[this.xCoor+xdir][this.yCoor+ydir] = true;
+			
+			myMap.stringArray[this.xCoor][this.yCoor] = this.underChar;
+			
+			//update position
+			
+			this.xCoor = this.xCoor + xdir;
+			this.yCoor = this.yCoor + ydir;
+			
 
-		myMap.isPawn[this.xCoor][this.yCoor] = false;
-		myMap.isPawn[this.xCoor+xdir][this.yCoor+ydir] = true;
-		
-		myMap.stringArray[this.xCoor][this.yCoor] = this.underChar;
-		
-		//update position
-		
-		this.xCoor = this.xCoor + xdir;
-		this.yCoor = this.yCoor + ydir;
-		
-
-		this.underChar = myMap.stringArray[this.xCoor][this.yCoor];
-		//myMap.stringArray[xCoor];	
-		this.refreshPosition();	
+			this.underChar = myMap.stringArray[this.xCoor][this.yCoor];
+			//myMap.stringArray[xCoor];	
+			this.refreshPosition();	
+		}
 	}
 
 	this.refreshPosition = function(){
@@ -175,24 +176,18 @@ var charYadj = [4, 5, 0];
 
 
 var myMap = new map();
-var player1 = new pawn("\\Q/", 10, 10, -3, 4, "green");
+var player1 = new pawn("\\Q/", 20, 10, -3, 4, "green");
 var player2 = new pawn("[B]", 11, 11, -3, 4, "red");
 var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
 var pawnArray = [player1, player2,player3];
 
 myMap.buildStructure(" # ", 21, 15, "r", 11);
 
-myMap.buildStructure(" . ", 20, 9, "r", 5);
-myMap.buildStructure(" . ", 20, 10, "r", 5);
+myMap.buildStructure(" . ", 24, 9, "l", 5);
+myMap.buildStructure(" . ", 24, 10, "l", 5);
 myMap.buildStructure(" . ", 24, 15, "u", 5);
 myMap.buildStructure(" . ", 25, 15, "u", 7);
 
 //console.log(player1.character[0]);
 //player1.character = (player1.character).replaceAt(0, "!");
 //console.log(player1.character[0]);
-setInterval(function(){
-    //clears whole screen before objects are redrawn
-    ctx.clearRect(0, 0, canvasW, canvasH);
-	myMap.drawPawns();
-	myMap.drawMap();
-}, 100);
