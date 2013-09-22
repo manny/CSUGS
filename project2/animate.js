@@ -36,7 +36,7 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 	//underlying character
 	this.underChar = myMap.stringArray[xCoor][yCoor];
 	
-	myMap.stringArray[xCoor][yCoor];
+	myMap.stringArray[xCoor][yCoor] = this.character;
 
 	this.move = function(direction){
 		var xdir = 0;
@@ -66,7 +66,7 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 			myMap.isPawn[this.xCoor+xdir][this.yCoor+ydir] = true;
 			
 			myMap.stringArray[this.xCoor][this.yCoor] = this.underChar;
-			
+			myMap.isPawn[this.xCoor][this.yCoor]=false;	
 			//update position
 			
 			this.xCoor = this.xCoor + xdir;
@@ -74,7 +74,7 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 			
 
 			this.underChar = myMap.stringArray[this.xCoor][this.yCoor];
-			//myMap.stringArray[xCoor];	
+			//myMap.stringArray[this.xCoor][this.yCoor] = this.character;	
 			this.refreshPosition();	
 		}
 	}
@@ -126,7 +126,7 @@ function map(){
 	
 	this.drawMap = function(){
 		ctx.font = "12pt Arial";
-		ctx.fillStyle = "red";
+		ctx.fillStyle = "white";
 		var adjX = 0;
 		var adjY = 0;
 		for(var i = 0; i < cols; i++){
@@ -150,10 +150,8 @@ function map(){
 	};
 
 	this.buildStructure = function(element, startX, startY, direction, length){
-		
 		var xdir = 0;
 		var ydir = 0;
-		
 		switch(direction){
 			case "l": xdir = -1;  
 				break;
@@ -163,25 +161,37 @@ function map(){
 				break;
 			case "d": ydir = 1;
 				break;
-
 		}
 		for(var i = 0; i<length; i++){
-			myMap.stringArray[startX + (xdir*i)][startY + (ydir*i)] = element;
+			this.stringArray[startX + (xdir*i)][startY + (ydir*i)] = element;
 		}
 	}
+
+	this.buildRoom = function(startX, startY, xSize, ySize){		
+		for(var x = 0; x<xSize; x++){
+			for(var y = 0; y<ySize; y++){
+				if(x ==0 || y==0 || x ==xSize-1 || y == ySize-1){
+					this.stringArray[x+startX][y+startY] = " # "; 
+				}else{
+					this.stringArray[x+startX][y+startY] = " . ";
+				}
+			}
+		}
+	};
 };
-var charArray = [" + ", " # ", ""];
-var charXadj = [-2, 0, 0];
-var charYadj = [4, 5, 0];
+var charArray = [" + ", " # ", "\\Q/", "[B]"];
+var charXadj = [-2, 0, -3, 4];
+var charYadj = [4, 5, -3, 4];
 
 
 var myMap = new map();
-var player1 = new pawn("\\Q/", 20, 10, -3, 4, "green");
-var player2 = new pawn("[B]", 11, 11, -3, 4, "red");
+var player1 = new pawn("\\Q/", 20, 10, -3, 4, "black");
+var player2 = new pawn("[B]", 17, 8, -3, 4, "red");
 var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
 var pawnArray = [player1, player2,player3];
 
-myMap.buildStructure(" # ", 21, 15, "r", 11);
+myMap.buildRoom(21, 15, 11, 6);
+myMap.buildRoom(16, 5, 5, 8);
 
 myMap.buildStructure(" . ", 24, 9, "l", 5);
 myMap.buildStructure(" . ", 24, 10, "l", 5);
