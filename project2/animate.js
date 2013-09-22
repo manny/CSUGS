@@ -10,11 +10,11 @@ var ctx = canvas.getContext('2d');
 
 $(document).ready(function(e){
 	$(window).keypress(function(event){
-		//console.log(event.which);
-		if(event.which == 97) player1.move("left");
-		if(event.which == 100) player1.move("right");
-		if(event.which == 119) player1.move("up");
-		if(event.which == 115) player1.move("down");
+		console.log(event.which);
+		if(event.which == 97) player2.move("left");
+		if(event.which == 100) player2.move("right");
+		if(event.which == 119) player2.move("up");
+		if(event.which == 115) player2.move("down");
 	});
 });
 
@@ -37,10 +37,8 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 	this.underChar = myMap.stringArray[xCoor][yCoor];	
 
 	myMap.stringArray[this.xCoor][this.yCoor] = this.character;
-	myMap.isPawn[this.xCoor][this.yCoor] = true;
+	myMap.pawnIndex[this.xCoor][this.yCoor] = true;
 
-
-	console.log("first underchar: " + this.underChar + " of " + this.character);
 	this.move = function(direction){
 		var xdir = 0;
 		var ydir = 0;
@@ -65,10 +63,9 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 		
 
 		if(myMap.stringArray[this.xCoor+xdir][this.yCoor+ydir] == " . "){
-			myMap.isPawn[this.xCoor][this.yCoor] = false;
-			myMap.isPawn[this.xCoor+xdir][this.yCoor+ydir] = true;
+			myMap.pawnIndex[this.xCoor][this.yCoor] = 0;
+			myMap.pawnIndex[this.xCoor+xdir][this.yCoor+ydir] = this;
 			
-			console.log("this.underChar " + this.underChar);
 			myMap.stringArray[this.xCoor][this.yCoor] = this.underChar;
 			//update position
 			
@@ -80,7 +77,6 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 			myMap.stringArray[this.xCoor][this.yCoor] = this.character;	
 			this.refreshPosition();	
 		}
-		console.log(myMap.stringArray[this.xCoor][this.yCoor]);
 	}
 
 	this.refreshPosition = function(){
@@ -88,6 +84,7 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color){
 		this.yPosition = this.yCoor*16+10+this.yAdj;	
 	}
 	this.refreshPosition();
+	
 
 };
 
@@ -105,11 +102,11 @@ function map(){
 		}
 	}
 
-	this.isPawn = new Array(rows);
+	this.pawnIndex = new Array(rows);
 	for(var i = 0; i < cols; i++){
-		this.isPawn[i] = new Array(rows);
+		this.pawnIndex[i] = new Array(rows);
 		for(var j = 0; j < rows; j++){
-			this.isPawn[i][j] = false;
+			this.pawnIndex[i][j] = 0;
 		}
 	}
 	
@@ -119,7 +116,7 @@ function map(){
 			var p = pawnArray[i];
 			ctx.fillStyle = p.color;
 			ctx.fillText(p.character, p.xPosition, p.yPosition);
-			this.isPawn[p.xCoor][p.yCoor] = true;
+			this.pawnIndex[p.xCoor][p.yCoor] = p;
 			this.stringArray[p.xCoor][p.yCoor] = p.character;
 		}
 	};
@@ -139,13 +136,11 @@ function map(){
 						break;
 					}
 				}
-				
-				if(!this.isPawn[i][j]){	
+				if(this.pawnIndex[i][j] == 0){	
 					ctx.fillText(this.stringArray[i][j], (i*16+2) + adjX, (j*16+10) + adjY );
 					adjX = 0;
 					adjY = 0;
 				}
-				
 			}
 		}
 	};
@@ -183,13 +178,12 @@ function map(){
 var myMap = new map();
 myMap.buildRoom(21, 15, 11, 6);
 myMap.buildRoom(16, 5, 5, 8);
+myMap.buildRoom(8, 2, 5, 10);
 
-myMap.buildStructure(" . ", 24, 9, "l", 5);
-myMap.buildStructure(" . ", 24, 10, "l", 5);
+myMap.buildStructure(" . ", 24, 9, "l", 16);
+myMap.buildStructure(" . ", 24, 10, "l", 16);
 myMap.buildStructure(" . ", 24, 15, "u", 5);
 myMap.buildStructure(" . ", 25, 15, "u", 7);
-
-console.log("origin character: " + myMap.stringArray[20][10]);
 
 
 var charArray = [" + ", " # "];
@@ -198,7 +192,6 @@ var charYadj = [4, 5, -3, 4];
 
 
 var player1 = new pawn("\\Q/", 20, 10, -3, 4, "black");
-console.log("after origin landing character: " + player1.underChar);
 var player2 = new pawn("[B]", 17, 8, -3, 4, "red");
 var player3 = new pawn(" [X]", cols-1, rows-1, -6, 4, "white");
 var pawnArray = [player1, player2, player3];
