@@ -1,5 +1,6 @@
-var canvasH = 395;
-var canvasW = 630;
+var canvasH = 420;
+
+var canvasW = 700;
 
 var soundtrack = AudioFX('sounds/spooky.ogg',{loop: true}); //ogg sound files supported in firefox
 var hitFX = AudioFX('sounds/slash.ogg', {pool: 10});
@@ -26,8 +27,8 @@ $(document).ready(function(e){
 	});
 });
 
-var rows = 23;
-var cols = 37;
+var rows = 26;
+var cols = 43;
 
 String.prototype.replaceAt=function(index, character){
 	return this.substr(0, index) + character + this.substr(index+character.length);
@@ -63,13 +64,13 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color, type){
 				if(this.xCoor !=0) xdir=-1;
 				break;
 			case "right": 
-				if(this.xCoor !=36) xdir=1;
+				if(this.xCoor !=cols-1) xdir=1;
 				break;
 			case "up": 
 				if(this.yCoor != 0) ydir=-1;
 				break;
 			case "down": 
-				if(this.yCoor !=22) ydir=1;
+				if(this.yCoor !=rows-1) ydir=1;
 				break;
 		}
 		if(myMap.stringArray[this.xCoor+xdir][this.yCoor+ydir] == " . "){
@@ -140,7 +141,7 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color, type){
 		}
 		var target = myMap.pawnIndex[this.xCoor+xdir][this.yCoor+ydir];
 		//if you hit an enemy
-		if(target!=0 && (xdir !=0 || ydir!=0)){
+		if(target!=0 && (xdir !=0 || ydir!=0) && (target.type == "enemy" || target.type == "player")){
 			console.log("hit!");
 			hitFX.play();
 			target.health--;
@@ -150,7 +151,7 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color, type){
 				console.log("dead");
 			}
 		}else if(target ==0){
-			console.log("miss");	
+			//console.log("miss");	
 			missFX.play();
 		}
 	};
@@ -158,14 +159,11 @@ function pawn(character, xCoor, yCoor, xAdj, yAdj, color, type){
 
 function map(){
 	
-	//coordinates on canvas
-	//this.x = 2;
-	//this.y = 10;
 	this.stringArray = new Array(rows);
 	for(var i = 0; i < cols; i++){
 		this.stringArray[i] = new Array(rows);
 		for(var j = 0; j < rows; j++){
-			this.stringArray[i][j] = "~~ ";
+			this.stringArray[i][j] = "   ";
 		}
 	}
 
@@ -248,36 +246,54 @@ function map(){
 };
 
 var myMap = new map();
-myMap.buildRoom(21, 15, 11, 6);
-myMap.buildRoom(16, 5, 5, 8);
-myMap.buildRoom(8, 2, 5, 10);
-myMap.buildRoom(2, 14, 10, 5);
+myMap.buildRoom(25, 19, 7, 6);
+myMap.buildRoom(21, 3, 9, 10);
+myMap.buildRoom(8, 2, 5, 7);
+myMap.buildRoom(2, 17, 10, 5);
+myMap.buildRoom(35, 4, 8, 5);
+myMap.buildRoom(37, 0, 5, 3);
 
+myMap.buildRoom(37, 21, 5, 4);
 
-myMap.buildStructure(" . ", 24, 9, "l", 22);
-myMap.buildStructure(" . ", 24, 10, "l", 22);
+myMap.buildStructure(" . ", 2, 0, "d", 7);
+myMap.buildStructure(" . ", 3, 0, "d", 7);
 
-myMap.buildStructure(" . ", 24, 15, "u", 5);
-myMap.buildStructure(" . ", 25, 15, "u", 7);
+myMap.buildStructure(" . ", 5, 6, "d", 12);
+myMap.buildStructure(" . ", 6, 6, "d", 12);
 
-myMap.buildStructure(" . ", 3, 15, "u", 7);
-myMap.buildStructure(" . ", 4, 15, "u", 7);
+myMap.buildStructure(" . ", 6, 20, "r", 20);
+myMap.buildStructure(" . ", 30, 23, "r", 10);
+
+myMap.buildStructure(" . ", 2, 7, "r", 38);
+myMap.buildStructure(" . ", 3, 6, "r", 38);
+
+myMap.buildStructure(" . ", cols-4, rows-3, "u", 22);
+
+myMap.buildStructure(" . ", 28, 10, "d", 10);
 
 
 var charArray = [" + ", " # ", "~~ "];
-var charXadj = [-2, 0, -2];
-var charYadj = [4, 5, 0];
-var charColors = ["white", "brown", "red"];    
+var charXadj = [-2, -2, -4];
+var charYadj = [4, 5, 4];
+var charColors = ["white", "gray", "red"];    
 
 
-var player1 = new pawn("\\Q/", 20, 10, -3, 4, "gray", "player");
-var enemy1 = new pawn("[B]", 17, 8, -3, 4, "gray", "enemy");
-var npc1 = new pawn(" [X]", 22, 18, -6, 4, "white", "npc");
-var pawnArray = [player1, enemy1, npc1];
+var player1 = new pawn(" J ", 3, 0, -3, 4, "silver", "player");
 
+var enemy1 = new pawn("[E]", 25, 8, -3, 4, "purple", "enemy");
+var enemy2 = new pawn("[E]", 24, 6, -3, 4, "purple", "enemy");
+var enemy3 = new pawn("[E]", 7, 19, -3, 4, "purple", "enemy");
+var enemy4 = new pawn("[E]", 39, 6, -3, 4, "purple", "enemy");
+
+var npc1 = new pawn(" [M]", 28, 21, -6, 4, "white", "npc");
+var item1 = new pawn ("[?]", 10, 18, -2, 3, "white", "item");
+var item2 = new pawn ("[?]", 10, 6, -2, 3, "white", "item");
+
+
+var pawnArray = [player1, enemy1,enemy2, enemy3, enemy4, npc1, item1, item2];
 
 setInterval(function(){
-	enemy1.attack("right");
+	//enemy1.attack("right");
 
 }, 1000);
 
@@ -287,7 +303,6 @@ setInterval(function(){
 	soundtrack.stop();
 	soundtrack.play();
 }, 105000);
-
 
 
 //console.log(player1.character[0]);
